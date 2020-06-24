@@ -1,10 +1,15 @@
 BEGIN;
 
+TRUNCATE
+    users
+    RESTART IDENTITY CASCADE;
+
 INSERT INTO users
-    (user_fullname, username, location, artist)
+    (username, location, user_email, user_password, user_fullname, artist)
+
 VALUES
-('Tory Jarvis', 'Vctrjrvs', 'Tampa', 'false'),
-('Mark Fishbach', 'Markiplier', 'Los Angeles', 'false'),
-('Ethan Nestor', 'CrankGamePlays', 'Los Angeles', 'false');
+('Vctrjrvs', 'Tampa', 'vctrjrvs@gmail.com', 'torypassword', 'Tory Jarvis', 'false'),
+('Markiplier', 'Los Angeles', 'annus@unusannus.com', 'markpassword', 'Mark Fishbach', 'false'),
+('CrankGamePlays', 'Los Angeles', 'unus@unusannus.com', 'ethanpassword', 'Ethan Nestor', 'false');
 
 COMMIT;

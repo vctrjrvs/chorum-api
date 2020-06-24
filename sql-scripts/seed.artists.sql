@@ -1,5 +1,9 @@
 BEGIN;
 
+TRUNCATE
+    artists
+    RESTART IDENTITY CASCADE;
+
 INSERT INTO artists
     (artist_name, location, genre)
 VALUES

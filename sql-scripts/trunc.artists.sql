@@ -1,0 +1,3 @@
+TRUNCATE
+    artists
+    RESTART IDENTITY CASCADE;
