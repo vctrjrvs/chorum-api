@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken')
 const config = require('../config')
 
 const AuthService = {
-  getUserWithUserName(db, user_name) {
-    return db('chorum_users')
-      .where({ user_name })
+  getUserWithUserName(db, username) {
+    return db('users')
+      .where({ username })
       .first()
   },
   comparePasswords(password, hash) {
@@ -18,13 +18,17 @@ const AuthService = {
     })
   },
 
-   verifyJwt(token) {
-      return jwt.verify(token, config.JWT_SECRET, {
-         algorithms: ['HS256'],
-       })
-     },
+  verifyJwt(token) {
+    return jwt.verify(token, config.JWT_SECRET, {
+      algorithms: ['HS256'],
+    })
+  },
   parseBasicToken(token) {
-  }
+    return Buffer
+      .from(token, 'base64')
+      .toString()
+      .split(':')
+  },
 }
 
 module.exports = AuthService

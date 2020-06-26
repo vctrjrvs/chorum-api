@@ -5,11 +5,11 @@ TRUNCATE
     RESTART IDENTITY CASCADE;
 
 INSERT INTO users
-    (username, location, user_email, user_password, user_fullname, artist)
+    (username, user_email, password, artist_name, genre, location)
 
 VALUES
-('Vctrjrvs', 'Tampa', 'vctrjrvs@gmail.com', 'torypassword', 'Tory Jarvis', 'false'),
-('Markiplier', 'Los Angeles', 'annus@unusannus.com', 'markpassword', 'Mark Fishbach', 'false'),
-('CrankGamePlays', 'Los Angeles', 'unus@unusannus.com', 'ethanpassword', 'Ethan Nestor', 'false');
+('deathvalleysocialclub', 'deathvalleysocialclub@gmail.com', 'Password1234!', 'Death Valley Social Club', 'Dubstep', 'Tampa'),
+('pinkranger', 'pinkrangermusic@gmail.com', 'PRPassword1234!', 'Pink Ranger', 'Vaporwave', 'Miami'),
+('shattered', 'shatteredsounds@gmail.com', 'SPassword1234!', 'Shattered', 'Metal', 'Florida');
 
 COMMIT;

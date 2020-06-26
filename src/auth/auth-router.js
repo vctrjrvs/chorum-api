@@ -6,8 +6,8 @@ const jsonBodyParser = express.json()
 
 authRouter
   .post('/login', jsonBodyParser, (req, res, next) => {
-    const { username, user_password } = req.body
-    const loginUser = { username, user_password }
+    const { username, password } = req.body
+    const loginUser = { username, password }
 
     for (const [key, value] of Object.entries(loginUser)) {
       if (value == null) {
@@ -28,7 +28,7 @@ authRouter
           })
         }
 
-        return AuthService.comparePasswords(loginUser.user_password, dbUser.user_password)
+        return AuthService.comparePasswords(loginUser.password, dbUser.password)
           .then(compareMatch => {
             if (!compareMatch) {
               return res.status(400).json({

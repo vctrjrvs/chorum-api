@@ -2,11 +2,12 @@ const express = require('express')
 const artistsService = require('./artists-service')
 
 const artistsRouter = express.Router()
+const jsonParser = express.json()
 
 artistsRouter
-  .route('/roster')
+  .route('/')
   .get((req, res, next) => {
-    artistsService.getAllartists(req.app.get('db'))
+    artistsService.getAllArtists(req.app.get('db'))
       .then(artists => {
         res.json(artists.map(artistsService.serializeArtist))
       })
@@ -14,7 +15,7 @@ artistsRouter
   })
 
 artistsRouter
-  .route('/:artist_id')
+  .route('/:id')
   .all(checkArtistExists)
   .get((req, res) => {
     res.json(artistsService.serializeArtist(res.artist))
@@ -25,10 +26,10 @@ async function checkArtistExists(req, res, next) {
   try {
     const artist = await artistsService.getById(
       req.app.get('db'),
-      req.params.artist_id
+      req.params.id
     )
 
-    if (!artist)
+    if (!artist.id)
       return res.status(404).json({
         error: `Artist doesn't exist`
       })

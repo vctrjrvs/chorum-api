@@ -3,9 +3,9 @@ const xss = require('xss')
 const ArtistsService = {
   getAllArtists(db) {
     return db
-      .from('artists')
+      .from('users')
       .select(
-        'artist_id',
+        'id',
         'artist_name',
         'location',
         'genre',
@@ -14,13 +14,13 @@ const ArtistsService = {
 
   getById(db, id) {
     return ArtistsService.getAllArtists(db)
-      .where('artist_id', id)
+      .where('id', id)
       .first()
   },
 
   serializeArtist(artist) {
     return {
-      id: artist.artist_id,
+      id: artist.id,
       name: artist.artist_name,
       location: artist.location,
       genre: artist.genre
