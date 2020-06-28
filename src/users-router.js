@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const UsersService = require('./users-service')
+const {requireAuth} = require('./middleware/jwt-auth')
 
 const usersRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -48,20 +49,32 @@ usersRouter
                })
                .catch(next)
 
-     })
-// .patch(jsonParser, (req, res, next) => {
-//      const { location, genre, artist_name } = req.body
-//      const userToUpdate = { location, genre, artist_name }
+     });
 
-//      UsersService.updateUser(
-//             req.app.get('db'),
-//             req.params.user.id,
-//             userToUpdate
-//           )
-//             .then(numRowsAffected => {
-//               res.status(204).end()
-//             })
-//             .catch(next)
-// })
+usersRouter
+     .patch('/:userId', jsonBodyParser, requireAuth, (req, res, next) => {
+          if (req.user.id != req.params.userId) {
+               return res.status(401).json({
+                    error: { message: `You are not authorized to edit this user` }
+               })
+          }
+          const { location, genre, artist_name } = req.body
+          const userToUpdate = { location, genre, artist_name }
+          const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
+          if (numberOfValues === 0) {
+               return res.status(400).json({
+                    error: { message: `Request body must contain either 'location', 'genre' or 'artist_name'` }
+               })
+          }
+          UsersService.updateUser(
+               req.app.get('db'),
+               req.user.id, // TODO: GET USERID FROM AUTHENTICATED USER, NOT THE URL
+               userToUpdate
+          )
+               .then(numRowsAffected => {
+                    res.status(204).end()
+               })
+               .catch(next)
+     })
 
 module.exports = usersRouter

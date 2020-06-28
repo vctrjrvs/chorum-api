@@ -10,6 +10,11 @@ const UsersService = {
       .first()
       .then(user => !!user)
   },
+  updateUser(db, id, newUserFields) {
+    return db('users')
+      .where({ id })
+      .update(newUserFields)
+  },
   insertUser(db, newUser) {
     return db
       .insert(newUser)
