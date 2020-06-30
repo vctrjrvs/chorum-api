@@ -12,7 +12,11 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT NOT NULL,
     artist_name TEXT NOT NULL,
     genre TEXT NOT NULL,
-    location TEXT NOT NULL
+    location TEXT NOT NULL,
+    about TEXT NOT NULL,
+    headline TEXT,
+    associated_acts TEXT
+
 );
 
 -- psql -U vctrjrvs -d chorum-db -f ./sql-scripts/seed.users.sql

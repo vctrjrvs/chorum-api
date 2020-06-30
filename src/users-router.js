@@ -48,7 +48,6 @@ usersRouter
                          })
                })
                .catch(next)
-
      });
 
 usersRouter
@@ -75,6 +74,12 @@ usersRouter
                     res.status(204).end()
                })
                .catch(next)
+     });
+
+usersRouter
+     .route('/')
+     .get(requireAuth, (req, res) => {
+       res.json(usersService.serializeUser(req.user))
      })
 
 module.exports = usersRouter

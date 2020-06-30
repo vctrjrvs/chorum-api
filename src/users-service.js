@@ -40,9 +40,21 @@ const UsersService = {
   hashPassword(password) {
     return bcrypt.hash(password, 12)
   },
+  getUserById(db, id) {
+    return db
+      .from('users')
+      .select(
+        'id',
+        'artist_name',
+        'location',
+        'genre',
+      )
+      .where('id', id)
+      .first()
+  },
   serializeUser(user) {
     return {
-      id: user.user_id,
+      id: user.id,
       username: xss(user.username),
       artist_name: xss(user.artist_name),
       genre: xss(user.genre),
