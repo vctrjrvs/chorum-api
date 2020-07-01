@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS users (
     artist_name TEXT NOT NULL,
     genre TEXT NOT NULL,
     location TEXT NOT NULL,
-    about TEXT NOT NULL,
+    about TEXT,
     headline TEXT,
     associated_acts TEXT
 

@@ -3,16 +3,16 @@ const bcrypt = require('bcryptjs')
 const app = require('../src/app')
 const helpers = require('./test-helpers')
 
-describe('Users Endpoints', function() {
+describe('Users Endpoints', function () {
   let db
 
-  const { testUsers } = helpers.makeArtistsFixtures()
+  const { testUsers } = helpers.makeUsersFixtures()
   const testUser = testUsers[0]
 
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
-      connection: process.env.TEST_DB_URL,
+      connection: process.env.TEST_DATABASE_URL,
     })
     app.set('db', db)
   })
@@ -32,15 +32,18 @@ describe('Users Endpoints', function() {
         )
       )
 
-      const requiredFields = ['username', 'password', 'artist_name']
+      const requiredFields = ['username', 'password', 'artist_name', 'user_email']
 
       requiredFields.forEach(field => {
         const registerAttemptBody = {
           username: 'test username',
-          password: 'test password',
-          user_email: 'test artist_name',
-          artist_name: 'test genre',
+          password: 'Password1234!',
+          user_email: 'test user@email.com',
+          artist_name: 'test artist_name',
           genre: 'test genre',
+          about: 'test about',
+          associated_acts: 'test acts',
+          headline: 'test headline',
           location: 'test location'
         }
 
@@ -59,8 +62,14 @@ describe('Users Endpoints', function() {
       it(`responds 400 'Password be longer than 8 characters' when empty password`, () => {
         const userShortPassword = {
           username: 'test username',
-          password: '1234567',
+          password: 'Passwor',
+          genre: 'test genre',
           artist_name: 'test artist_name',
+          user_email: 'test user@email.com',
+          headline: 'test headline',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -73,6 +82,12 @@ describe('Users Endpoints', function() {
           username: 'test username',
           password: '*'.repeat(73),
           artist_name: 'test artist_name',
+          genre: 'test genre',
+          headline: 'test headline',
+          user_email: 'test user@email.com',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -85,6 +100,12 @@ describe('Users Endpoints', function() {
           username: 'test username',
           password: ' 1Aa!2Bb@',
           artist_name: 'test artist_name',
+          headline: 'test headline',
+          genre: 'test genre',
+          user_email: 'test user@email.com',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -96,7 +117,13 @@ describe('Users Endpoints', function() {
         const userPasswordEndsSpaces = {
           username: 'test username',
           password: '1Aa!2Bb@ ',
+          genre: 'test genre',
           artist_name: 'test artist_name',
+          user_email: 'test user@email.com',
+          headline: 'test headline',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -108,7 +135,13 @@ describe('Users Endpoints', function() {
         const userPasswordNotComplex = {
           username: 'test username',
           password: '11AAaabb',
+          headline: 'test headline',
           artist_name: 'test artist_name',
+          genre: 'test genre',
+          user_email: 'test user@email.com',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -119,8 +152,14 @@ describe('Users Endpoints', function() {
       it(`responds 400 'User name already taken' when username isn't unique`, () => {
         const duplicateUser = {
           username: testUser.username,
+          headline: 'test headline',
           password: '11AAaa!!',
+          genre: 'test genre',
           artist_name: 'test artist_name',
+          user_email: 'test user@email.com',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -135,6 +174,12 @@ describe('Users Endpoints', function() {
           username: 'test username',
           password: '11AAaa!!',
           artist_name: 'test artist_name',
+          genre: 'test genre',
+          user_email: 'test user@email.com',
+          headline: 'test headline',
+          about: 'test about',
+          associated_acts: 'test acts',
+          location: 'test location'
         }
         return supertest(app)
           .post('/api/users')
@@ -144,27 +189,35 @@ describe('Users Endpoints', function() {
             expect(res.body).to.have.property('id')
             expect(res.body.username).to.eql(newUser.username)
             expect(res.body.artist_name).to.eql(newUser.artist_name)
-            expect(res.body.genre).to.eql('')
+            expect(res.body.genre).to.eql('test genre')
+            expect(res.body.about).to.eql('test about')
+            expect(res.body.headline).to.eql('test headline')
+            expect(res.body.associated_acts).to.eql('test acts')
+            expect(res.body.location).to.eql('test location')
             expect(res.body).to.not.have.property('password')
             expect(res.headers.location).to.eql(`/api/users/${res.body.id}`)
           })
-          .expect(res =>
+          .then(res =>
             db
-              .from('user')
+              .from('users')
               .select('*')
               .where({ id: res.body.id })
               .first()
               .then(row => {
                 expect(row.username).to.eql(newUser.username)
                 expect(row.artist_name).to.eql(newUser.artist_name)
-                expect(row.genre).to.eql(null)
-                expect(row.location).to.eql(null)
+                expect(row.genre).to.eql('test genre')
+                expect(row.location).to.eql('test location')
+                expect(row.about).to.eql('test about')
+                expect(row.headline).to.eql('test headline')
+                expect(row.associated_acts).to.eql('test acts')
 
                 return bcrypt.compare(newUser.password, row.password)
               })
               .then(compareMatch => {
                 expect(compareMatch).to.be.true
               })
+              .catch()
           )
       })
     })

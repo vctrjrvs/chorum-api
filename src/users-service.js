@@ -59,6 +59,9 @@ const UsersService = {
       artist_name: xss(user.artist_name),
       genre: xss(user.genre),
       location: xss(user.location),
+      about: xss(user.about),
+      associated_acts: xss(user.associated_acts),
+      headline: xss(user.headline),
     }
   }
 }

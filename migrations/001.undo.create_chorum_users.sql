@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS chorum_users;
+DROP TABLE IF EXISTS users;

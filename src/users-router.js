@@ -8,8 +8,8 @@ const jsonBodyParser = express.json()
 
 usersRouter
      .post('/', jsonBodyParser, (req, res, next) => {
-          const { username, user_email, password, location, genre, artist_name } = req.body
-          for (const field of ['username', 'user_email', 'password', 'location', 'genre', 'artist_name'])
+          const { username, user_email, password, location, genre, artist_name, about, associated_acts, headline } = req.body
+          for (const field of ['username', 'user_email', 'password', 'location', 'genre', 'artist_name', 'about', 'associated_acts', 'headline'])
                if (!req.body[field])
                     return res.status(400).json({
                          error: `Missing '${field}' in request body`
@@ -34,6 +34,9 @@ usersRouter
                                    location,
                                    genre,
                                    artist_name,
+                                   about,
+                                   associated_acts,
+                                   headline
                               }
                               return UsersService.insertUser(
                                    req.app.get('db'),
@@ -57,12 +60,12 @@ usersRouter
                     error: { message: `You are not authorized to edit this user` }
                })
           }
-          const { location, genre, artist_name } = req.body
-          const userToUpdate = { location, genre, artist_name }
+          const { location, genre, artist_name, about, associated_acts, headline } = req.body
+          const userToUpdate = { location, genre, artist_name, about, associated_acts, headline }
           const numberOfValues = Object.values(userToUpdate).filter(Boolean).length
           if (numberOfValues === 0) {
                return res.status(400).json({
-                    error: { message: `Request body must contain either 'location', 'genre' or 'artist_name'` }
+                    error: { message: `Request body must contain either 'location', 'genre', 'artist_name', 'about', 'associated_acts', 'headline''` }
                })
           }
           UsersService.updateUser(
@@ -79,7 +82,7 @@ usersRouter
 usersRouter
      .route('/')
      .get(requireAuth, (req, res) => {
-       res.json(usersService.serializeUser(req.user))
+       res.json(UsersService.serializeUser(req.user))
      })
 
 module.exports = usersRouter

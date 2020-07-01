@@ -7,38 +7,42 @@ function makeUsersArray() {
       id: 1,
       username: 'test-user-1',
       artist_name: 'Test user 1',
+      user_email: 'user@email.com',
       location: 'TU1',
-      password: 'password',
+      password: 'Password1234!',
       genre: 'test genre',
     },
     {
       id: 2,
       username: 'test-user-2',
       artist_name: 'Test user 2',
+      user_email: 'user@email.com',
       location: 'TU2',
-      password: 'password',
+      password: 'Password1234!',
       genre: 'test genre',
     },
     {
       id: 3,
       username: 'test-user-3',
       artist_name: 'Test user 3',
+      user_email: 'user@email.com',
       location: 'TU3',
-      password: 'password',
+      password: 'Password1234!',
       genre: 'test genre',
     },
     {
       id: 4,
       username: 'test-user-4',
       artist_name: 'Test user 4',
+      user_email: 'user@email.com',
       location: 'TU4',
-      password: 'password',
+      password: 'Password1234!',
       genre: 'test genre',
     },
   ]
 }
 
-function makeArtistsFixtures() {
+function makeUsersFixtures() {
   const testUsers = makeUsersArray()
   return { testUsers }
 }
@@ -51,14 +55,14 @@ function cleanTables(db) {
         artists
       `
     )
-    .then(() =>
-      Promise.all([
-        trx.raw(`ALTER SEQUENCE artists_id_seq minvalue 0 START WITH 1`),
-        trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
-        trx.raw(`SELECT setval('artists_id_seq', 0)`),
-        trx.raw(`SELECT setval('users_id_seq', 0)`),
-      ])
-    )
+      .then(() =>
+        Promise.all([
+          // trx.raw(`ALTER SEQUENCE artists_id_seq minvalue 0 START WITH 1`),
+          trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
+          // trx.raw(`SELECT setval('artists_id_seq', 0)`),
+          trx.raw(`SELECT setval('users_id_seq', 0)`),
+        ])
+      )
   )
 }
 
@@ -96,11 +100,42 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   return `Bearer ${token}`
 }
 
+function makeMaliciousUser(user) {
+  const maliciousUser =
+  {
+    id: 911,
+    username: 'test-malicious-user',
+    artist_name: 'Explicit bad user name <script>alert("xss");</script>',
+    user_email: 'baduser@email.com',
+    location: 'TU4',
+    password: 'Password1234!',
+    genre: 'test genre',
+    about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
+  }
+  const expectedUser = {
+    ...makeExpectedUser([user], maliciousUser),
+    artist_name: 'Explicit bad user name <script>alert("xss");</script>',
+    about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+  }
+  return {
+    maliciousUser,
+    expectedUser,
+  }
+}
+
+function seedMaliciousUser(db, user) {
+  return db
+    .into('users')
+    .insert([user])
+}
+
 module.exports = {
   makeUsersArray,
-  makeArtistsFixtures,
+  makeUsersFixtures,
   cleanTables,
   seedArtistsTables,
   makeAuthHeader,
   seedUsers,
+  makeMaliciousUser,
+  seedMaliciousUser,
 }

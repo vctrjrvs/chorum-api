@@ -9,6 +9,9 @@ const ArtistsService = {
         'artist_name',
         'location',
         'genre',
+        'about',
+        'associated_acts',
+        'headline',
       )
   },
 
@@ -23,7 +26,10 @@ const ArtistsService = {
       id: artist.id,
       name: artist.artist_name,
       location: artist.location,
-      genre: artist.genre
+      genre: artist.genre,
+      about: artist.about,
+      associated_acts: artist.associated_acts,
+      headline: artist.headline,
     }
   },
 }
