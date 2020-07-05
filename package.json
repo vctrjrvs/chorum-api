@@ -1,7 +1,7 @@
 {
   "name": "chorum-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "The API server side for the Chorum app",
   "main": "index.js",
   "scripts": {
     "test": "mocha --require test/setup.js",
@@ -14,7 +14,7 @@
     "migrate:production": "heroku run npm run migrate"
   },
   "keywords": [],
-  "author": "",
+  "author": "Victor Jarvis",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
