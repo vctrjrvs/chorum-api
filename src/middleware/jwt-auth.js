@@ -8,7 +8,7 @@ function requireAuth(req, res, next) {
     return res.status(401).json({ error: 'Missing bearer token' })
   } else {
     bearerToken = authToken.slice(7, authToken.length)
-  }
+  };
 
   try {
     const payload = AuthService.verifyJwt(bearerToken)
@@ -27,14 +27,12 @@ function requireAuth(req, res, next) {
       .catch(err => {
         console.error(err)
         next(err)
-      })
+      });
   } catch (error) {
     res.status(401).json({ error: 'Unauthorized request' })
-  }
-}
+  };
+};
 
 module.exports = {
   requireAuth,
-}
-
-// basic example password for now: Password1234!
+};

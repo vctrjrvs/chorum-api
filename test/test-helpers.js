@@ -40,12 +40,58 @@ function makeUsersArray() {
       genre: 'test genre',
     },
   ]
-}
+};
 
 function makeUsersFixtures() {
   const testUsers = makeUsersArray()
   return { testUsers }
-}
+};
+
+function makeArtistsArray() {
+  return [
+    {
+      id: 1,
+      username: 'test-artist-1',
+      artist_name: 'Test artist 1',
+      user_email: 'artist@email.com',
+      location: 'TA1',
+      password: 'Password1234!',
+      genre: 'test genre',
+    },
+    {
+      id: 2,
+      username: 'test-artist-2',
+      artist_name: 'Test artist 2',
+      user_email: 'artist@email.com',
+      location: 'TA2',
+      password: 'Password1234!',
+      genre: 'test genre',
+    },
+    {
+      id: 3,
+      username: 'test-artist-3',
+      artist_name: 'Test artist 3',
+      user_email: 'artist@email.com',
+      location: 'TA3',
+      password: 'Password1234!',
+      genre: 'test genre',
+    },
+    {
+      id: 4,
+      username: 'test-artist-4',
+      artist_name: 'Test artist 4',
+      user_email: 'artist@email.com',
+      location: 'TA4',
+      password: 'Password1234!',
+      genre: 'test genre',
+    },
+  ]
+};
+
+function makeArtistsFixtures() {
+  const testArtists = makeArtistsArray()
+  return { testArtists }
+};
 
 function cleanTables(db) {
   return db.transaction(trx =>
@@ -64,7 +110,7 @@ function cleanTables(db) {
         ])
       )
   )
-}
+};
 
 function seedUsers(db, users) {
   const preppedUsers = users.map(user => ({
@@ -79,7 +125,7 @@ function seedUsers(db, users) {
         [users[users.length - 1].id],
       )
     )
-}
+};
 
 function seedArtistsTables(db, users, artists) {
   return db.transaction(async trx => {
@@ -90,7 +136,7 @@ function seedArtistsTables(db, users, artists) {
       [artists[artists.length - 1].id],
     )
   })
-}
+};
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
@@ -98,6 +144,36 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     algorithm: 'HS256',
   })
   return `Bearer ${token}`
+};
+
+function makeExpectedArtist(users) {
+  const { user_id } = user.id 
+  const artist = users
+    .find(user => user.id === user_id)
+    return artist = {
+        id: 1,
+        username: 'test-artist-1',
+        artist_name: 'Test artist 1',
+        user_email: 'artist@email.com',
+        location: 'TA1',
+        password: 'Password1234!',
+        genre: 'test genre',
+      }
+}
+
+function makeExpectedUser(users) {
+  const { user_id } = user.id 
+  const user = users
+    .find(user => user.id === user_id)
+    return user = {
+      id: 1,
+      username: 'test-user-1',
+      artist_name: 'Test user 1',
+      user_email: 'user@email.com',
+      location: 'TU1',
+      password: 'Password1234!',
+      genre: 'test genre',
+      }
 }
 
 function makeMaliciousUser(user) {
@@ -121,21 +197,56 @@ function makeMaliciousUser(user) {
     maliciousUser,
     expectedUser,
   }
-}
+};
 
 function seedMaliciousUser(db, user) {
   return db
     .into('users')
     .insert([user])
+};
+
+function makeMaliciousArtist(artist) {
+  const maliciousArtist =
+  {
+    id: 911,
+    username: 'test-malicious-artist',
+    artist_name: 'Explicit bad user name <script>alert("xss");</script>',
+    user_email: 'baduser@email.com',
+    location: 'TA4',
+    password: 'Password1234!',
+    genre: 'test genre',
+    about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
+  }
+  const expectedArtist = {
+    ...makeExpectedArtist([artist], maliciousArtist),
+    artist_name: 'Explicit bad user name <script>alert("xss");</script>',
+    about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+  }
+  return {
+    maliciousArtist,
+    expectedArtist,
+  }
+}
+
+function seedMaliciousArtist(db, artist) {
+  return db
+    .into('artists')
+    .insert([artist])
 }
 
 module.exports = {
   makeUsersArray,
-  makeUsersFixtures,
+  makeUsersFixtures,  
+  makeArtistsArray,
+  makeArtistsFixtures,
   cleanTables,
   seedArtistsTables,
   makeAuthHeader,
   seedUsers,
+  makeExpectedArtist,
+  makeExpectedUser,
   makeMaliciousUser,
   seedMaliciousUser,
+  seedMaliciousArtist,
+  makeMaliciousArtist
 }

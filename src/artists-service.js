@@ -32,6 +32,6 @@ const ArtistsService = {
       headline: artist.headline,
     }
   },
-}
+};
 
 module.exports = ArtistsService

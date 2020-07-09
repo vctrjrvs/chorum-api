@@ -12,14 +12,14 @@ artistsRouter
         res.json(artists.map(artistsService.serializeArtist))
       })
       .catch(next)
-  })
+  });
 
 artistsRouter
   .route('/:id')
   .all(checkArtistExists)
   .get((req, res) => {
     res.json(artistsService.serializeArtist(res.artist))
-  })
+  });
 
 /* async/await syntax for promises */
 async function checkArtistExists(req, res, next) {
@@ -38,7 +38,7 @@ async function checkArtistExists(req, res, next) {
     next()
   } catch (error) {
     next(error)
-  }
-}
+  };
+};
 
 module.exports = artistsRouter

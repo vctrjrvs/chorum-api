@@ -14,9 +14,9 @@ authRouter
       if (value == null) {
         return res.status(400).json({
           error: `Missing '${key}' in request body`
-        })
-      }
-    }
+        });
+      };
+    };
 
     AuthService.getUserWithUserName(
       req.app.get('db'),
@@ -26,33 +26,33 @@ authRouter
         if (!dbUser) {
           return res.status(400).json({
             error: 'Incorrect username or password',
-          })
-        }
+          });
+        };
 
         return AuthService.comparePasswords(loginUser.password, dbUser.password)
           .then(compareMatch => {
             if (!compareMatch) {
               return res.status(400).json({
                 error: 'Incorrect username or password',
-              })
-            }
+              });
+            };
 
             const sub = dbUser.username
             const payload = { user_id: dbUser.id }
             return res.send({
               authToken: AuthService.createJwt(sub, payload),
-            })
-          })
+            });
+          });
       })
       .catch(next)
-  })
+  });
 
 authRouter.post('/', requireAuth, (req, res) => {
   const sub = req.user.user_name
   const payload = { user_id: req.user.id }
   res.send({
     authToken: AuthService.createJwt(sub, payload),
-  })
-})
+  });
+});
 
 module.exports = authRouter

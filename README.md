@@ -1,26 +1,66 @@
-# Express Boilerplate!
+# Chorum API
 
-This is a boilerplate project used for starting new projects!
+![GitHub package.json version](https://img.shields.io/github/package-json/v/vctrjrvs/Chorum-App?style=for-the-badge)
 
-## Set up
+Programmed by **Victor Jarvis** for Thinkful's Software Engineering Immersion Program.
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+This was created using Javascript, Node.js, and PostgreSQL.
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+Live Client Project Link: <https://chorum-app.vctrjrvs.vercel.app/>
 
-## Scripts
+## API Documentation
 
-Start the application `npm start`
+---
 
-Start nodemon for the application `npm run dev`
+## Post User
 
-Run the tests `npm test`
+Posts the users data to the database.
 
-## Deploying
+**URL**<br />
+'/api/users'
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+**Method**<br />
+'GET'
+
+**Data Params (Required)**<br />
+     Username, Email, Password, Location, Genre, Artist Name, About, Associated Acts, Headline
+
+**Success Response**<br />
+     *Code:* 201<br />
+     *Content:* id, username, user_email, password, location, genre, artist_name, about, associated_acts, headline
+
+**Error Response** <br />
+     *Code:* 400<br />
+     *Content:* 'Missing field in request body' <br />
+     *Code:* 400<br />
+     *Content:* 'Password be longer than 8 characters'<br />
+     OR 'Password be less than 72 characters' <br />
+     OR 'Password must not start or end with empty spaces'<br />
+     OR 'Password must contain one upper case, lower case, number and special character'<br />
+     *Code:* 400<br />
+     *Content:* 'Username already taken'
+
+---
+
+## Patch User
+
+Allows a user to edit their profile's information.
+
+**URL**<br />
+'api/users/:userId'
+
+**Method**<br />
+'PATCH'
+
+**Data Params (Required)**<br />
+     Username, Email, Password, Location, Genre, Artist Name, About, Associated Acts, Headline
+
+**Success Response**<br />
+     *Code:* 201<br />
+     *Content:* id, username, user_email, password, location, genre, artist_name, about, associated_acts, headline
+
+**Error Response** <br />
+     *Code:* 400<br />
+     *Content:* Request body must contain either 'location', 'genre', 'artist_name', 'about', 'associated_acts', 'headline' <br />
+     *Code:* 401 UNAUTHORIZED<br />
+     *Content:* 'You are not authorized to edit this user'<br />
