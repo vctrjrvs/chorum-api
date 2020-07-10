@@ -28,10 +28,12 @@ async function checkArtistExists(req, res, next) {
       req.app.get('db'),
       req.params.id
     )
-
-    if (!artist.id)
+      console.log(artist)
+    if (!artist)
       return res.status(404).json({
-        error: `Artist doesn't exist`
+        error: { 
+          message: `Artist Not Found` 
+        }
       })
 
     res.artist = artist

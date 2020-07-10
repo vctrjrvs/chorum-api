@@ -11,6 +11,9 @@ function makeUsersArray() {
       location: 'TU1',
       password: 'Password1234!',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
     {
       id: 2,
@@ -20,6 +23,9 @@ function makeUsersArray() {
       location: 'TU2',
       password: 'Password1234!',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
     {
       id: 3,
@@ -29,6 +35,9 @@ function makeUsersArray() {
       location: 'TU3',
       password: 'Password1234!',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
     {
       id: 4,
@@ -38,6 +47,9 @@ function makeUsersArray() {
       location: 'TU4',
       password: 'Password1234!',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
   ]
 };
@@ -52,38 +64,50 @@ function makeArtistsArray() {
     {
       id: 1,
       username: 'test-artist-1',
-      artist_name: 'Test artist 1',
-      user_email: 'artist@email.com',
-      location: 'TA1',
+      user_email: 'artist@email.com', 
       password: 'Password1234!',
+      artist_name: 'Test artist 1',
+      location: 'TA1',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
     {
       id: 2,
       username: 'test-artist-2',
-      artist_name: 'Test artist 2',
       user_email: 'artist@email.com',
-      location: 'TA2',
       password: 'Password1234!',
+      artist_name: 'Test artist 2',
+      location: 'TA2',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
     {
       id: 3,
       username: 'test-artist-3',
-      artist_name: 'Test artist 3',
       user_email: 'artist@email.com',
-      location: 'TA3',
       password: 'Password1234!',
+      artist_name: 'Test artist 3',
+      location: 'TA3',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
     {
       id: 4,
       username: 'test-artist-4',
-      artist_name: 'Test artist 4',
       user_email: 'artist@email.com',
-      location: 'TA4',
       password: 'Password1234!',
+      artist_name: 'Test artist 4',
+      location: 'TA4',
       genre: 'test genre',
+      about: null,
+      associated_acts: null,
+      headline: null
     },
   ]
 };
@@ -146,36 +170,6 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   return `Bearer ${token}`
 };
 
-function makeExpectedArtist(users) {
-  const { user_id } = user.id 
-  const artist = users
-    .find(user => user.id === user_id)
-    return artist = {
-        id: 1,
-        username: 'test-artist-1',
-        artist_name: 'Test artist 1',
-        user_email: 'artist@email.com',
-        location: 'TA1',
-        password: 'Password1234!',
-        genre: 'test genre',
-      }
-}
-
-function makeExpectedUser(users) {
-  const { user_id } = user.id 
-  const user = users
-    .find(user => user.id === user_id)
-    return user = {
-      id: 1,
-      username: 'test-user-1',
-      artist_name: 'Test user 1',
-      user_email: 'user@email.com',
-      location: 'TU1',
-      password: 'Password1234!',
-      genre: 'test genre',
-      }
-}
-
 function makeMaliciousUser(user) {
   const maliciousUser =
   {
@@ -189,9 +183,16 @@ function makeMaliciousUser(user) {
     about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
   }
   const expectedUser = {
-    ...makeExpectedUser([user], maliciousUser),
-    artist_name: 'Explicit bad user name <script>alert("xss");</script>',
-    about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+    id: 1,
+    username: 'test-user-1',
+    artist_name: 'Test user 1',
+    user_email: 'user@email.com',
+    location: 'TU1',
+    password: 'Password1234!',
+    genre: 'test genre',
+    about: null,
+    associated_acts: null,
+    headline: null
   }
   return {
     maliciousUser,
@@ -218,9 +219,16 @@ function makeMaliciousArtist(artist) {
     about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
   }
   const expectedArtist = {
-    ...makeExpectedArtist([artist], maliciousArtist),
-    artist_name: 'Explicit bad user name <script>alert("xss");</script>',
-    about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
+        id: 1,
+        username: 'test-artist-1',
+        artist_name: 'Test artist 1',
+        user_email: 'artist@email.com',
+        location: 'TA1',
+        password: 'Password1234!',
+        genre: 'test genre',
+        about: null,
+        associated_acts: null,
+        headline: null
   }
   return {
     maliciousArtist,
@@ -243,8 +251,8 @@ module.exports = {
   seedArtistsTables,
   makeAuthHeader,
   seedUsers,
-  makeExpectedArtist,
-  makeExpectedUser,
+  // makeExpectedArtist,
+  // makeExpectedUser,
   makeMaliciousUser,
   seedMaliciousUser,
   seedMaliciousArtist,

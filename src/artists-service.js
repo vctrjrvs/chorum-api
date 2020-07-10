@@ -24,7 +24,8 @@ const ArtistsService = {
   serializeArtist(artist) {
     return {
       id: artist.id,
-      name: artist.artist_name,
+      artist_name: artist.artist_name,
+      username: artist.username,
       location: artist.location,
       genre: artist.genre,
       about: artist.about,
