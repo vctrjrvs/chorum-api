@@ -7,11 +7,11 @@ const AuthService = {
   getUserWithUserName(db, username) {
     return db('users')
       .where({ username })
-      .first()
+      .first();
   },
 
   comparePasswords(password, hash) {
-    return bcrypt.compare(password, hash)
+    return bcrypt.compare(password, hash);
   },
 
   createJwt(subject, payload) {
@@ -32,9 +32,9 @@ const AuthService = {
     return Buffer
       .from(token, 'base64')
       .toString()
-      .split(':')
+      .split(':');
   },
 
 };
 
-module.exports = AuthService
+module.exports = AuthService;

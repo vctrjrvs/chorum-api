@@ -1,20 +1,23 @@
-const bcrypt = require('bcryptjs')
-const xss = require('xss')
+const bcrypt = require('bcryptjs');
+const xss = require('xss');
 
-const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
+const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
 
 const UsersService = {
+
   hasUserWithUserName(db, username) {
     return db('users')
       .where({ username })
       .first()
       .then(user => !!user)
   },
+
   updateUser(db, id, newUserFields) {
     return db('users')
       .where({ id })
       .update(newUserFields)
   },
+
   insertUser(db, newUser) {
     return db
       .insert(newUser)
@@ -22,6 +25,7 @@ const UsersService = {
       .returning('*')
       .then(([user]) => user)
   },
+
   validatePassword(password) {
     if (password.length < 8) {
       return 'Password be longer than 8 characters'
@@ -35,11 +39,13 @@ const UsersService = {
     if (!REGEX_UPPER_LOWER_NUMBER_SPECIAL.test(password)) {
       return 'Password must contain one upper case, lower case, number and special character'
     }
-    return null
+    return null;
   },
+
   hashPassword(password) {
-    return bcrypt.hash(password, 12)
+    return bcrypt.hash(password, 12);
   },
+
   getUserById(db, id) {
     return db
       .from('users')
@@ -50,8 +56,9 @@ const UsersService = {
         'genre',
       )
       .where('id', id)
-      .first()
+      .first();
   },
+
   serializeUser(user) {
     return {
       id: user.id,
@@ -62,8 +69,10 @@ const UsersService = {
       about: xss(user.about),
       associated_acts: xss(user.associated_acts),
       headline: xss(user.headline),
-    }
-  }
-}
+    };
 
-module.exports = UsersService
+  }
+
+};
+
+module.exports = UsersService;

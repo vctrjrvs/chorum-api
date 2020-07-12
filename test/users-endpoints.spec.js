@@ -4,35 +4,36 @@ const app = require('../src/app')
 const helpers = require('./test-helpers')
 
 describe('Users Endpoints', function () {
-  let db
+  let db;
 
-  const { testUsers } = helpers.makeUsersFixtures()
-  const testUser = testUsers[0]
+  const { testUsers } = helpers.makeUsersFixtures();
+  const testUser = testUsers[0];
 
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
       connection: process.env.TEST_DATABASE_URL,
-    })
+    });
     app.set('db', db)
-  })
+  });
 
-  after('disconnect from db', () => db.destroy())
+  after('disconnect from db', () => db.destroy());
 
-  before('cleanup', () => helpers.cleanTables(db))
+  before('cleanup', () => helpers.cleanTables(db));
 
-  afterEach('cleanup', () => helpers.cleanTables(db))
+  afterEach('cleanup', () => helpers.cleanTables(db));
 
   describe(`POST /api/users`, () => {
+
     context(`User Validation`, () => {
       beforeEach('insert users', () =>
         helpers.seedUsers(
           db,
           testUsers,
         )
-      )
+      );
 
-      const requiredFields = ['username', 'password', 'artist_name', 'user_email']
+      const requiredFields = ['username', 'password', 'artist_name', 'user_email'];
 
       requiredFields.forEach(field => {
         const registerAttemptBody = {
@@ -45,19 +46,19 @@ describe('Users Endpoints', function () {
           associated_acts: 'test acts',
           headline: 'test headline',
           location: 'test location'
-        }
+        };
 
         it(`responds with 400 required error when '${field}' is missing`, () => {
-          delete registerAttemptBody[field]
+          delete registerAttemptBody[field];
 
           return supertest(app)
             .post('/api/users')
             .send(registerAttemptBody)
             .expect(400, {
               error: `Missing '${field}' in request body`,
-            })
-        })
-      })
+            });
+        });
+      });
 
       it(`responds 400 'Password be longer than 8 characters' when empty password`, () => {
         const userShortPassword = {
@@ -70,12 +71,12 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(userShortPassword)
-          .expect(400, { error: `Password be longer than 8 characters` })
-      })
+          .expect(400, { error: `Password be longer than 8 characters` });
+      });
 
       it(`responds 400 'Password be less than 72 characters' when long password`, () => {
         const userLongPassword = {
@@ -88,12 +89,12 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(userLongPassword)
-          .expect(400, { error: `Password be less than 72 characters` })
-      })
+          .expect(400, { error: `Password be less than 72 characters` });
+      });
 
       it(`responds 400 error when password starts with spaces`, () => {
         const userPasswordStartsSpaces = {
@@ -106,12 +107,12 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(userPasswordStartsSpaces)
-          .expect(400, { error: `Password must not start or end with empty spaces` })
-      })
+          .expect(400, { error: `Password must not start or end with empty spaces` });
+      });
 
       it(`responds 400 error when password ends with spaces`, () => {
         const userPasswordEndsSpaces = {
@@ -124,12 +125,12 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(userPasswordEndsSpaces)
-          .expect(400, { error: `Password must not start or end with empty spaces` })
-      })
+          .expect(400, { error: `Password must not start or end with empty spaces` });
+      });
 
       it(`responds 400 error when password isn't complex enough`, () => {
         const userPasswordNotComplex = {
@@ -142,12 +143,12 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(userPasswordNotComplex)
-          .expect(400, { error: `Password must contain one upper case, lower case, number and special character` })
-      })
+          .expect(400, { error: `Password must contain one upper case, lower case, number and special character` });
+      });
 
       it(`responds 400 'User name already taken' when username isn't unique`, () => {
         const duplicateUser = {
@@ -160,15 +161,16 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(duplicateUser)
-          .expect(400, { error: `Username already taken` })
-      })
-    })
+          .expect(400, { error: `Username already taken` });
+      });
+    });
 
     context(`Happy path`, () => {
+      
       it(`responds 201, serialized user, storing bcryped password`, () => {
         const newUser = {
           username: 'test username',
@@ -180,7 +182,7 @@ describe('Users Endpoints', function () {
           about: 'test about',
           associated_acts: 'test acts',
           location: 'test location'
-        }
+        };
         return supertest(app)
           .post('/api/users')
           .send(newUser)
@@ -212,14 +214,14 @@ describe('Users Endpoints', function () {
                 expect(row.headline).to.eql('test headline')
                 expect(row.associated_acts).to.eql('test acts')
 
-                return bcrypt.compare(newUser.password, row.password)
+                return bcrypt.compare(newUser.password, row.password);
               })
               .then(compareMatch => {
                 expect(compareMatch).to.be.true
               })
               .catch()
-          )
-      })
-    })
-  })
-})
+          );
+      });
+    });
+  });
+});

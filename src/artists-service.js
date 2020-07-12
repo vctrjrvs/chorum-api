@@ -1,4 +1,4 @@
-const xss = require('xss')
+const xss = require('xss');
 
 const ArtistsService = {
   getAllArtists(db) {
@@ -12,27 +12,27 @@ const ArtistsService = {
         'about',
         'associated_acts',
         'headline',
-      )
+      );
   },
 
   getById(db, id) {
     return ArtistsService.getAllArtists(db)
       .where('id', id)
-      .first()
+      .first();
   },
 
   serializeArtist(artist) {
     return {
       id: artist.id,
-      artist_name: artist.artist_name,
+      artist_name: xss(artist.artist_name),
       username: artist.username,
-      location: artist.location,
-      genre: artist.genre,
+      location: xss(artist.location),
+      genre: xss(artist.genre),
       about: artist.about,
       associated_acts: artist.associated_acts,
       headline: artist.headline,
-    }
+    };
   },
 };
 
-module.exports = ArtistsService
+module.exports = ArtistsService;

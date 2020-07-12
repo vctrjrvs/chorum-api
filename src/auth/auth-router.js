@@ -7,8 +7,8 @@ const jsonBodyParser = express.json()
 
 authRouter
   .post('/login', jsonBodyParser, (req, res, next) => {
-    const { username, password } = req.body
-    const loginUser = { username, password }
+    const { username, password } = req.body;
+    const loginUser = { username, password };
 
     for (const [key, value] of Object.entries(loginUser)) {
       if (value == null) {
@@ -48,11 +48,11 @@ authRouter
   });
 
 authRouter.post('/', requireAuth, (req, res) => {
-  const sub = req.user.user_name
-  const payload = { user_id: req.user.id }
+  const sub = req.user.user_name;
+  const payload = { user_id: req.user.id };
   res.send({
     authToken: AuthService.createJwt(sub, payload),
   });
 });
 
-module.exports = authRouter
+module.exports = authRouter;

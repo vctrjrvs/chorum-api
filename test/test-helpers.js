@@ -51,12 +51,12 @@ function makeUsersArray() {
       associated_acts: null,
       headline: null
     },
-  ]
+  ];
 };
 
 function makeUsersFixtures() {
   const testUsers = makeUsersArray()
-  return { testUsers }
+  return { testUsers };
 };
 
 function makeArtistsArray() {
@@ -64,7 +64,7 @@ function makeArtistsArray() {
     {
       id: 1,
       username: 'test-artist-1',
-      user_email: 'artist@email.com', 
+      user_email: 'artist@email.com',
       password: 'Password1234!',
       artist_name: 'Test artist 1',
       location: 'TA1',
@@ -109,12 +109,12 @@ function makeArtistsArray() {
       associated_acts: null,
       headline: null
     },
-  ]
+  ];
 };
 
 function makeArtistsFixtures() {
   const testArtists = makeArtistsArray()
-  return { testArtists }
+  return { testArtists };
 };
 
 function cleanTables(db) {
@@ -133,14 +133,14 @@ function cleanTables(db) {
           trx.raw(`SELECT setval('users_id_seq', 0)`),
         ])
       )
-  )
+  );
 };
 
 function seedUsers(db, users) {
   const preppedUsers = users.map(user => ({
     ...user,
     password: bcrypt.hashSync(user.password, 1)
-  }))
+  }));
   return db.into('users').insert(preppedUsers)
     .then(() =>
       // update the auto sequence to stay in sync
@@ -148,7 +148,7 @@ function seedUsers(db, users) {
         `SELECT setval('users_id_seq', ?)`,
         [users[users.length - 1].id],
       )
-    )
+    );
 };
 
 function seedArtistsTables(db, users, artists) {
@@ -159,14 +159,14 @@ function seedArtistsTables(db, users, artists) {
       `SELECT setval('artists_id_seq', ?)`,
       [artists[artists.length - 1].id],
     )
-  })
+  });
 };
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
     subject: user.username,
     algorithm: 'HS256',
-  })
+  });
   return `Bearer ${token}`
 };
 
@@ -181,7 +181,7 @@ function makeMaliciousUser(user) {
     password: 'Password1234!',
     genre: 'test genre',
     about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
-  }
+  };
   const expectedUser = {
     id: 1,
     username: 'test-user-1',
@@ -193,11 +193,11 @@ function makeMaliciousUser(user) {
     about: null,
     associated_acts: null,
     headline: null
-  }
+  };
   return {
     maliciousUser,
     expectedUser,
-  }
+  };
 };
 
 function seedMaliciousUser(db, user) {
@@ -217,44 +217,42 @@ function makeMaliciousArtist(artist) {
     password: 'Password1234!',
     genre: 'test genre',
     about: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`
-  }
+  };
   const expectedArtist = {
-        id: 1,
-        username: 'test-artist-1',
-        artist_name: 'Test artist 1',
-        user_email: 'artist@email.com',
-        location: 'TA1',
-        password: 'Password1234!',
-        genre: 'test genre',
-        about: null,
-        associated_acts: null,
-        headline: null
-  }
+    id: 1,
+    username: 'test-artist-1',
+    artist_name: 'Test artist 1',
+    user_email: 'artist@email.com',
+    location: 'TA1',
+    password: 'Password1234!',
+    genre: 'test genre',
+    about: null,
+    associated_acts: null,
+    headline: null
+  };
   return {
     maliciousArtist,
     expectedArtist,
-  }
-}
+  };
+};
 
 function seedMaliciousArtist(db, artist) {
   return db
     .into('artists')
     .insert([artist])
-}
+};
 
 module.exports = {
   makeUsersArray,
-  makeUsersFixtures,  
+  makeUsersFixtures,
   makeArtistsArray,
   makeArtistsFixtures,
   cleanTables,
   seedArtistsTables,
   makeAuthHeader,
   seedUsers,
-  // makeExpectedArtist,
-  // makeExpectedUser,
   makeMaliciousUser,
   seedMaliciousUser,
   seedMaliciousArtist,
   makeMaliciousArtist
-}
+};
